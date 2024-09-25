@@ -11,5 +11,4 @@ router.get("/", (_, res: Response) => {
 
 router.use("/repos", repoControllers);
 
-
 export default router;
