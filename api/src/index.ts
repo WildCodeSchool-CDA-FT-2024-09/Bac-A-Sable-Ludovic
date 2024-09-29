@@ -4,6 +4,8 @@ const app = express();
 
 // app.get ('/maroute', fonction de callback)
 
+app.use(express.json());
+
 app.use("/api", router);
 
 app.listen(3312, () => {
