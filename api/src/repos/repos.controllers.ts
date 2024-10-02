@@ -6,7 +6,8 @@ import express, { Response, Request } from "express";
 
 import { Repo } from "./repo.entities";
 import { Status } from "../status/status.entities";
-
+import { Lang } from "../langs/lang.entities";
+import { In } from "typeorm";
 
 // let myRepos: Array<Repo> = repos;
 
@@ -40,6 +41,7 @@ repoControllers.get("/", async (_: any, res: Response) => {
     const repos = await Repo.find({
       relations: {
         status: true,
+        langs: true,
       },
     });
     res.status(200).json(repos);
@@ -50,7 +52,10 @@ repoControllers.get("/", async (_: any, res: Response) => {
 
 repoControllers.get("/:id", async (req: Request, res: Response) => {
   try {
-    const repo = await Repo.findOneBy({ id: req.params.id });
+    const repo = await Repo.findOne({
+      where: { id: req.params.id },
+      relations: { status: true },
+    });
 
     if (repo) {
       res.status(200).json(repo);
@@ -75,6 +80,11 @@ repoControllers.post("/", async (req: Request, res: Response) => {
     });
     repo.status = status;
 
+    const langs = await Lang.find({
+      where: { id: In(req.body.langs.map((l: number) => l)) },
+    });
+    repo.langs = langs;
+
     await repo.save();
     res.status(201).json(repo);
   } catch (error) {
@@ -86,14 +96,19 @@ repoControllers.put("/:id", async (req: Request, res: Response) => {
   try {
     const repo = await Repo.findOneBy({ id: req.params.id });
 
-    if (repo) {
-      res.status(200).json(repo);
-    } else {
-      res.sendStatus(404);
+    if (!repo) {
+      return res.sendStatus(404);
     }
+
+    repo.name = req.body.name ?? repo.name;
+    repo.url = req.body.url ?? repo.url;
+    repo.status = req.body.status ?? repo.status;
+
+    await repo.save();
+    return res.status(200).json(repo);
   } catch (error) {
     console.error(error);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 
