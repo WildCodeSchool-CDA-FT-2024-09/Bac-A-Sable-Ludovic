@@ -6,8 +6,9 @@ import langs from "../../data/langs.json";
 import { Status } from "../status/status.entities";
 import status from "../../data/status.json";
 
-// import { Repos } from "../repos/repo.entities";
-// import repos from "../../data/repos.json";
+import { Repo } from "../repos/repo.entities";
+import repos from "../../data/repos.json";
+import lang_by_repo from "../../data/lang_by_repo.json";
 
 (async () => {
   console.log("coucou");
@@ -47,11 +48,34 @@ import status from "../../data/status.json";
 
     console.log(savedStatus);
 
-    // const savedRepos = await Promise.all(
-    //   repos.map(async (el) => {
-    //     const repo = new Repos();
-    //   })
-    // );
+    const savedRepos = await Promise.all(
+      repos.map(async (el) => {
+        const repo = new Repo();
+        repo.id = el.id;
+        repo.name = el.name;
+        repo.url = el.url;
+
+        const status = savedStatus.find(
+          (st) => st.id === el.isPrivate
+        ) as Status;
+        repo.status = status;
+
+        const myLangs = savedLangs.filter((svLg) => {
+          const associatedlang = lang_by_repo.filter(
+            (lgbyrep) => lgbyrep.repo_id === el.id
+          );
+          const langLabel = langs.filter((lg) =>
+            associatedlang.some((assolg) => assolg.lang_id === lg.id)
+          );
+          return langLabel.some((lgLabel) => lgLabel.label === svLg.label);
+        });
+        repo.langs = myLangs;
+
+        return await repo.save();
+      })
+    );
+
+    console.log(savedRepos);
 
     await queryRunner.commitTransaction();
   } catch (error) {

@@ -1,0 +1,10 @@
+.repo {
+  display: block;
+  align-items: center;
+  text-align: center;
+  align-items: center;
+  border: 2px solid rgb(87, 140, 215);
+  padding: 10px;
+  word-wrap: break-word;
+}
+
