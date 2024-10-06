@@ -39,14 +39,26 @@ const repoControllers = express.Router();
 repoControllers.get("/", async (req: Request, res: Response) => {
   try {
     const lang = typeof req.query.lang === "string" ? req.query.lang : null;
+    const status =
+      typeof req.query.status === "string"
+        ? parseInt(req.query.status, 10)
+        : null;
 
-    const queryOptions = {
+    const queryOptions: any = {
       relations: {
         status: true,
         langs: true,
       },
-      where: lang ? { langs: { label: lang } } : {},
+      where: {},
     };
+
+    if (lang) {
+      queryOptions.where.langs = { label: lang };
+    }
+
+    if (status !== null) {
+      queryOptions.where.status = { id: status };
+    }
     const repos = await Repo.find(queryOptions);
 
     res.status(200).json(repos);
