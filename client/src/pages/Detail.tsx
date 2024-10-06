@@ -1,13 +1,13 @@
+import "./Detail.css";
 import { useLoaderData } from "react-router-dom";
-import { Repo } from "../types/RepoType"
-
+import { Repo } from "../types/RepoType";
 
 export default function Detail() {
   const details = useLoaderData() as Repo[];
 
   return (
-    <div>
-      <h1>Détails du Repo</h1>
+    <div className="detailBloc">
+      <h1 className="titleDetail">Détails du Repo</h1>
       {details.map((detail, index) => (
         <div key={index}>
           <p>ID : {detail.id}</p>

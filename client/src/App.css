@@ -45,7 +45,8 @@ svg {
 
 
 .langContainer {
-  background-color: rgb(219, 243, 251);
+  background-color: black;
+  color: white;
   display: flex;
   justify-content: space-between;
   gap: 5vw;
@@ -53,6 +54,8 @@ svg {
   margin-bottom: 5dvb;
   padding-left: 10px;
   padding-right: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 
   /* list-style-type: disc; */
   font-size: 1.7rem;

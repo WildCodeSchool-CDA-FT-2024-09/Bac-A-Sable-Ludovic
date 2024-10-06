@@ -7,9 +7,9 @@ function RepoDard({ name, url, id }: Repo) {
   return (
     <div className="repo">
       <Link to={url}>
-        <h2 className="titleRepo">{name}</h2>
+        <h2 className="titleRepoGit">{name}</h2>
       </Link>
-      <Link to={`/detail/${id}`}>Plus d'info</Link>
+      <Link to={`/detail/${id}`} className="detail">Plus d'info</Link>
     </div>
   );
 }
