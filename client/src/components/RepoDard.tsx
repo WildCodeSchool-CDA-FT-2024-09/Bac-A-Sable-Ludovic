@@ -1,12 +1,15 @@
 import "./RepoDard.css";
 
 import type { Repo } from "../types/RepoType";
+import { Link } from "react-router-dom";
 
-function RepoDard({ name, url }: Repo) {
+function RepoDard({ name, url, id }: Repo) {
   return (
     <div className="repo">
-      <h2 className="titleRepo">{name}</h2>
-      <h3 className="urlRepo">{url}</h3>
+      <Link to={url}>
+        <h2 className="titleRepo">{name}</h2>
+      </Link>
+      <Link to={`/detail/${id}`}>Plus d'info</Link>
     </div>
   );
 }

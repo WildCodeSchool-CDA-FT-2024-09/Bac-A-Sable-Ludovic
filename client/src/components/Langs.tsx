@@ -1,10 +1,15 @@
 import "./Langs.css";
 
-function Lang({ lang }: { lang: string }) {
+type LangProps = {
+  lang: string,
+  onClick: () => void;
+}
+
+function Lang({ lang, onClick}: LangProps) {
   return (
     <>
      
-      <li className="classLang">{lang}</li>
+      <li className="classLang" onClick={onClick}>{lang}</li>
     </>
   );
 }

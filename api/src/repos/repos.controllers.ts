@@ -36,14 +36,19 @@ const repoControllers = express.Router();
 //   }
 // };
 
-repoControllers.get("/", async (_: any, res: Response) => {
+repoControllers.get("/", async (req: Request, res: Response) => {
   try {
-    const repos = await Repo.find({
+    const lang = typeof req.query.lang === "string" ? req.query.lang : null;
+
+    const queryOptions = {
       relations: {
         status: true,
         langs: true,
       },
-    });
+      where: lang ? { langs: { label: lang } } : {},
+    };
+    const repos = await Repo.find(queryOptions);
+
     res.status(200).json(repos);
   } catch (error) {
     res.sendStatus(500);
@@ -52,9 +57,9 @@ repoControllers.get("/", async (_: any, res: Response) => {
 
 repoControllers.get("/:id", async (req: Request, res: Response) => {
   try {
-    const repo = await Repo.findOne({
+    const repo = await Repo.find({
       where: { id: req.params.id },
-      relations: { status: true },
+      relations: { status: true, langs: true },
     });
 
     if (repo) {

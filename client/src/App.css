@@ -62,12 +62,13 @@ svg {
 
 .repoContainer {
   display: grid;
-  grid-template-columns: repeat(3, 400px);
+  grid-template-columns: repeat(3, 30rem);
   grid-gap: 20px;
-  grid-auto-rows: minmax(200px, auto);
+  grid-auto-rows: minmax(15rem, auto);
 
   padding-left: 20px;
   padding-right: 20px;
+
 
 }
 
