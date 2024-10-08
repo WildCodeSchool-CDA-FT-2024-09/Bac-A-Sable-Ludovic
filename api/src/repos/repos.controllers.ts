@@ -131,19 +131,14 @@ repoControllers.put("/:id", async (req: Request, res: Response) => {
 
 repoControllers.patch("/:id", async (req: Request, res: Response) => {
   try {
-    const repo = await Repo.findOneByOrFail({ id: req.params.id });
+    const repo = await Repo.findOneOrFail({
+      where: { id: req.params.id },
+    });
 
-    if (!repo) {
-      return res.sendStatus(404);
-    }
+    repo.isFavorite = req.body.isFavorite;
+    repo.save();
 
-    repo.name = req.body.name ?? repo.name;
-    repo.url = req.body.url ?? repo.url;
-    repo.status = req.body.status ?? repo.status;
-    repo.isFavorite = req.body.isFavorite ?? repo.isFavorite;
-
-    await repo.save();
-    return res.status(200).json(repo);
+    return res.sendStatus(203);
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);
