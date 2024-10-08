@@ -35,6 +35,10 @@ export class Repo extends BaseEntity {
   @IsBoolean()
   isFavorite: boolean;
 
+  @Field()
+  @Column({default: null})
+  isPrivate: number;
+
   @Field(() => Status)
   @ManyToOne(() => Status, (status) => status.id)
   status: Status;
