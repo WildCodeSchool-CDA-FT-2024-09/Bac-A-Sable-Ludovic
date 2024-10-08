@@ -1,50 +1,50 @@
 import "./Detail.css";
-import { useLoaderData } from "react-router-dom";
-import { Repo } from "../types/RepoType";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import connexion from "../services/connexion";
-import { useState, useEffect } from "react";
+import type { Repo } from "../types/RepoType";
 
 export default function Detail() {
-  const details = useLoaderData() as Repo[];
+  console.log("Initialisation du Detail");
+  const { id } = useParams();
   const [data, setData] = useState<Repo>();
 
-  useEffect(() => {
-    if (details && details.length > 0) {
-      setData(details[0]);
-    }
-  }, [details]);
-
   const handleLike = async () => {
-    if (!data) {
-      return;
-    }
     try {
-      await connexion.patch(`/api/repos/${data.id}`, {
+      await connexion.patch(`/api/repos/${id}`, {
         isFavorite: !data?.isFavorite,
       });
-      const newRepo = { ...data } as Repo;
-      newRepo.isFavorite = !data?.isFavorite;
-      setData(newRepo);
+      const newRepos = { ...data } as Repo;
+      newRepos.isFavorite = !data?.isFavorite;
+      setData(newRepos);
     } catch (error) {
       console.error(error);
     }
   };
 
+  useEffect(() => {
+    const fetchRepos = async () => {
+      try {
+        const repos = await connexion.get(`/api/repos/${id}`);
+        setData(repos.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchRepos();
+  }, [id]);
+
   return (
-    <div className="detailBloc">
-      <h1 className="titleDetail">Détails du Repo</h1>
-      {details.map((detail, index) => (
-        <div key={index}>
-          <p>ID : {detail.id}</p>
-          <p>Nom : {detail.name}</p>
-          <p>
-            URL : <a href={detail.url}>{detail.url}</a>
-          </p>
+    <>
+      {data && (
+        <div>
+          <h1>{data.name}</h1>
           <button type="button" onClick={handleLike}>
-            {detail.isFavorite ? "DisLike" : "Like"}
+            {data.isFavorite ? "DisLike" : "Like"}
           </button>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }
+
