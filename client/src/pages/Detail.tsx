@@ -1,16 +1,33 @@
 import "./Detail.css";
 import { useLoaderData } from "react-router-dom";
 import { Repo } from "../types/RepoType";
-import { useState } from "react";
+import connexion from "../services/connexion";
+import { useState, useEffect } from "react";
 
 export default function Detail() {
   const details = useLoaderData() as Repo[];
-  const [isFavorite, setIsFavorite] = useState<number[]>([]);
+  const [data, setData] = useState<Repo>();
 
-  const handleLike = (id: number) => {
-    setIsFavorite((prevIsFavorite) =>
-      prevIsFavorite.includes(id) ? prevIsFavorite : [...prevIsFavorite, id]
-    );
+  useEffect(() => {
+    if (details && details.length > 0) {
+      setData(details[0]);
+    }
+  }, [details]);
+
+  const handleLike = async () => {
+    if (!data) {
+      return;
+    }
+    try {
+      await connexion.patch(`/api/repos/${data.id}`, {
+        isFavorite: !data?.isFavorite,
+      });
+      const newRepo = { ...data } as Repo;
+      newRepo.isFavorite = !data?.isFavorite;
+      setData(newRepo);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -23,7 +40,9 @@ export default function Detail() {
           <p>
             URL : <a href={detail.url}>{detail.url}</a>
           </p>
-          <button onClick={() => handleLike(detail.id)}>Like</button>
+          <button type="button" onClick={handleLike}>
+            {detail.isFavorite ? "DisLike" : "Like"}
+          </button>
         </div>
       ))}
     </div>

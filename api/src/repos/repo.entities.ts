@@ -25,7 +25,7 @@ export class Repo extends BaseEntity {
   @IsString()
   url: string;
 
-  @Column({ default: false })
+  @Column({ default: () => false })
   @IsBoolean()
   isFavorite: boolean;
 
