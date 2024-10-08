@@ -1,9 +1,17 @@
 import "./Detail.css";
 import { useLoaderData } from "react-router-dom";
 import { Repo } from "../types/RepoType";
+import { useState } from "react";
 
 export default function Detail() {
   const details = useLoaderData() as Repo[];
+  const [isFavorite, setIsFavorite] = useState<number[]>([]);
+
+  const handleLike = (id: number) => {
+    setIsFavorite((prevIsFavorite) =>
+      prevIsFavorite.includes(id) ? prevIsFavorite : [...prevIsFavorite, id]
+    );
+  };
 
   return (
     <div className="detailBloc">
@@ -15,6 +23,7 @@ export default function Detail() {
           <p>
             URL : <a href={detail.url}>{detail.url}</a>
           </p>
+          <button onClick={() => handleLike(detail.id)}>Like</button>
         </div>
       ))}
     </div>

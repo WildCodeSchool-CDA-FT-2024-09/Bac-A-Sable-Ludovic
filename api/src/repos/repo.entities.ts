@@ -7,7 +7,7 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
-import { Min, Max, IsString } from "class-validator";
+import { Min, Max, IsString, IsBoolean } from "class-validator";
 import { Status } from "../status/status.entities";
 import { Lang } from "../langs/lang.entities";
 
@@ -24,6 +24,10 @@ export class Repo extends BaseEntity {
   @Column()
   @IsString()
   url: string;
+
+  @Column({ default: false })
+  @IsBoolean()
+  isFavorite: boolean;
 
   @ManyToOne(() => Status, (status) => status.id)
   @Min(1)
