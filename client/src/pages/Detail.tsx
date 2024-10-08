@@ -37,8 +37,12 @@ export default function Detail() {
   return (
     <>
       {data && (
-        <div>
+        <div className="detailBloc">
           <h1>{data.name}</h1>
+          <a href={data.url} target="_blank" rel="noreferrer">
+            {data.url}
+          </a>
+          <p>{data.langs.map((lang) => lang.label)}</p>
           <button type="button" onClick={handleLike}>
             {data.isFavorite ? "DisLike" : "Like"}
           </button>
@@ -47,4 +51,3 @@ export default function Detail() {
     </>
   );
 }
-
