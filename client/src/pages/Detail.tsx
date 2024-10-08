@@ -42,7 +42,7 @@ export default function Detail() {
           <a href={data.url} target="_blank" rel="noreferrer">
             {data.url}
           </a>
-          <p>{data.langs.map((lang) => lang.label)}</p>
+          <p>{data.langs ? data.langs.map((lang) => lang.label) : "No languages"}</p>
           <button type="button" onClick={handleLike}>
             {data.isFavorite ? "DisLike" : "Like"}
           </button>
