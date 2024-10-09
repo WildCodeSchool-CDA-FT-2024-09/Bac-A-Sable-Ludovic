@@ -3,7 +3,7 @@ export type Repo = {
   url: string;
   id: string;
   langs?: Lang[];
-  isFavorite?: boolean;
+  isFavorite: boolean;
 };
 
 export type Lang = {
