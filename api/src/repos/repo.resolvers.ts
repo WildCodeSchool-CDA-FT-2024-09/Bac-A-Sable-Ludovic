@@ -1,14 +1,19 @@
+//import des entités Repo et LightRepo de repo.entities.ts
 import { Repo, LightRepo } from "./repo.entities";
+
+//import des décorateurs et classes Arg, Field, InputType, Mutation, Query et Resolver de type-graphql
+//utilisés pour définir des arguments, des champs, des types d'entrée, des mutations, des requêtes et des résolveurs
+//dans un shcéma GraphQL.
 import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+
 import { Status } from "../status/status.entities";
 
 /**
  * type Repo {
- *  id: string;
- * ...
+ *  id: string
+ *  ...
  * }
  */
-
 @InputType()
 class RepoInput implements Partial<Repo> {
   @Field()
@@ -25,7 +30,7 @@ class RepoInput implements Partial<Repo> {
 }
 
 @Resolver(Repo)
-export default class RepoResolvers {
+export default class RepoResolver {
   // Methode GET pour tous les repos
   @Query(() => [Repo])
   async fullrepos() {
@@ -63,7 +68,7 @@ export default class RepoResolvers {
     repo.status = status;
 
     await repo.save();
-    console.log("Repo created", repo);
+    console.log("repo", repo);
     const myRepo = await Repo.findOneOrFail({
       where: { id: newRepo.id },
       relations: {

@@ -29,13 +29,20 @@
 //   console.log(`Serveur is listenning on http://localhost:${PORT}`);
 // });
 
+//Import ApolloServer du package @apollo/server pour créerr un serveur Apollo et fonction
+//startStandaloneServer pour démarrer le serveur Apollo
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+//Import buildSchema du package type-graphql pour construire le schéma GraphQL
+//en utilisant des classes et des décorateurs TypeScript
 import { buildSchema } from "type-graphql";
+//Import de la base de données
 import { dataSource } from "./db/client";
+//Import de reflect-metadata qui active les décorateurs TypeScript (essentiel pour type-graphql et typeorm)
 import "reflect-metadata";
-
+//Import des resolvers de repos
 import RepoResolvers from "./repos/repo.resolvers";
+import LangResolver from "./langs/lang.resolvers";
 
 // import repos from "../data/repos.json";
 
@@ -64,10 +71,15 @@ import RepoResolvers from "./repos/repo.resolvers";
 //   },
 // };
 
+// Initialise une connexion à la base de données.
+// Genère un schéma GraphQL à partir des resolvers repo en utilisant buildSchema.
+// Crée un serveur Apollo avec le schéma généré.
+// Démarre le serveur Apollo sur le port 4000.
+
 (async () => {
   await dataSource.initialize();
   const schema = await buildSchema({
-    resolvers: [RepoResolvers],
+    resolvers: [RepoResolvers, LangResolver],
   });
 
   const server = new ApolloServer({ schema });
