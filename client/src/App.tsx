@@ -1,11 +1,11 @@
 import "./App.css";
 // import { useEffect, useState } from "react";
 // import connexion from "./services/connexion";
-import type { Repo } from "./types/RepoType";
+import type { Repo, Lang } from "./types/RepoType";
 // import data from "./assets/data.json";
 // import dataLang from "./assets/dataLang.json";
 import RepoDard from "./components/RepoDard";
-// import Langs from "./components/Langs";
+import Langs from "./components/Langs";
 import { useQuery, gql } from "@apollo/client";
 
 const GET_REPOS = gql`
@@ -19,8 +19,27 @@ const GET_REPOS = gql`
   }
 `;
 
+const GET_LANGS = gql`
+  query FullLangs {
+    fulllangs {
+      label
+    }
+  }
+`;
+
 function App() {
-  const { loading, error, data, refetch } = useQuery(GET_REPOS);
+  const {
+    loading: loadingRepos,
+    error: errorRepos,
+    data: dataRepos,
+    refetch: refetchRepos,
+  } = useQuery(GET_REPOS);
+  const {
+    loading: loadingLangs,
+    error: errorLangs,
+    data: dataLangs,
+    refetch: refetchLangs,
+  } = useQuery(GET_LANGS);
 
   // const [repos, setRepos] = useState<Repo[]>([]);
   // const [langs, setLangs] = useState<Lang[]>([]);
@@ -52,25 +71,21 @@ function App() {
   // const handleLangChange = (lang: string | null) => {
   //   setSelectedLang(lang);
   // };
-  if (loading) return <h1>Loading...</h1>;
-  if (error) return <p>Error</p>;
+  if (loadingRepos || loadingLangs) return <h1>Loading...</h1>;
+  if (errorRepos || errorLangs) return <p>Error</p>;
 
   return (
     <main>
       <h1 className="titleRepo">Mes repo GitHub</h1>
 
-      {/* <ul className="langContainer">
+      <ul className="langContainer">
         <li className="NoFilter">Aucun filtre</li>
-        {langs.map((lang: Lang) => (
-          <Langs
-            key={lang.label}
-            lang={lang.label}
-            onClick={() => handleLangChange(lang.label)}
-          />
+        {dataLangs.fulllangs.map((lang: Lang) => (
+          <Langs key={lang.label} lang={lang.label} />
         ))}
-      </ul> */}
+      </ul>
       <div className="repoContainer">
-        {data.fullrepos.map((repo: Repo) => (
+        {dataRepos.fullrepos.map((repo: Repo) => (
           <RepoDard
             name={repo.name}
             url={repo.url}
@@ -79,7 +94,14 @@ function App() {
           />
         ))}
       </div>
-      <button onClick={() => refetch()}>Refetch</button>
+      <button
+        onClick={() => {
+          refetchRepos();
+          refetchLangs();
+        }}
+      >
+        Refetch
+      </button>
     </main>
   );
 }

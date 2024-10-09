@@ -20,6 +20,7 @@ export class Status extends BaseEntity {
   @Column()
   label: string;
 
-  @OneToMany(() => Repo, repo => repo.status)
-  repos?: Repo[]
+  @Field(() => [Repo])
+  @OneToMany(() => Repo, (repo) => repo.status)
+  repos?: Repo[];
 }
