@@ -1,5 +1,13 @@
 import { Lang } from "../langs/lang.entities";
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  Int,
+} from "type-graphql";
 
 @InputType()
 class LangInput implements Partial<Lang> {
@@ -40,6 +48,19 @@ export default class LangResolver {
       },
     });
     console.log("myLang", myLang);
+    return lang;
+  }
+  @Mutation(() => Lang)
+  async deleteLang(@Arg("id", () => Int) id: number) {
+    console.log("ID reçu pour suppression:", id);
+    const lang = await Lang.findOne({ where: { id } });
+    if (!lang) {
+      console.error(`Langue avec ID ${id} non trouvée`);
+
+      throw new Error("Langue non trouvée");
+    }
+    await Lang.remove(lang);
+    console.log(`Langue ${lang.label} supprimée`);
     return lang;
   }
 }
