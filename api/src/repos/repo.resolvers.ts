@@ -80,4 +80,17 @@ export default class RepoResolver {
     console.log("myRepo", myRepo);
     return myRepo;
   }
+  @Mutation(() => Repo)
+  async deleteRepo(@Arg("id") id: string) {
+    console.log("ID reçu pour suppression:", id);
+    const repo = await Repo.findOne({ where: { id } });
+    if (!repo) {
+      console.error(`Repo avec ID ${id} non trouvée`);
+
+      throw new Error("Repo non trouvée");
+    }
+
+    await repo.remove();
+    return repo;
+  }
 }
