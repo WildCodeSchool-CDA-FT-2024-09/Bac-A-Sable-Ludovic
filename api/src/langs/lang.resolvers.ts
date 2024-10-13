@@ -50,6 +50,26 @@ export default class LangResolver {
     console.log("myLang", myLang);
     return lang;
   }
+
+  @Mutation(() => Lang)
+  async updateLang(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") updatedLang: LangInput
+  ) {
+    console.log("ID reçu pour la mise à jour :", id);
+    const lang = await Lang.findOne({ where: { id } });
+    if (!lang) {
+      console.error(`Langue avec ID ${id} non trouvée`);
+
+      throw new Error("Langue non trouvée");
+    }
+
+    lang.label = updatedLang.label;
+    await lang.save();
+    console.log(`Langue ${lang.label} mise à jour`);
+    return lang;
+  }
+
   @Mutation(() => Lang)
   async deleteLang(@Arg("id", () => Int) id: number) {
     console.log("ID reçu pour suppression:", id);

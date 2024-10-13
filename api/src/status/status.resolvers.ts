@@ -1,5 +1,13 @@
 import { Status } from "./status.entities";
-import { Arg, Field, InputType, Mutation, Query, Resolver, Int } from "type-graphql";
+import {
+  Arg,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+  Int,
+} from "type-graphql";
 
 @InputType()
 class StatusInput implements Partial<Status> {
@@ -42,9 +50,29 @@ export default class StatusResolver {
     console.log("myStatus", myStatus);
     return status;
   }
+
   @Mutation(() => Status)
-  async deleteStatus(@Arg("id", () => Int) id : number) {
-  console.log("ID reçu pour suppression:", id);
+  async updateStatus(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") updatedStatus: StatusInput
+  ) {
+    console.log("ID reçu pour la mise à jour :", id);
+    const status = await Status.findOne({ where: { id } });
+    if (!status) {
+      console.error(`Status avec ID ${id} non trouvé`);
+
+      throw new Error("Status non trouvé");
+    }
+
+    status.label = updatedStatus.label;
+    await status.save();
+    console.log(`Status ${status.label} mis à jour`);
+    return status;
+  }
+
+  @Mutation(() => Status)
+  async deleteStatus(@Arg("id", () => Int) id: number) {
+    console.log("ID reçu pour suppression:", id);
     const status = await Status.findOne({ where: { id } });
     if (!status) {
       console.error(`Status avec ID ${id} non trouvée`);

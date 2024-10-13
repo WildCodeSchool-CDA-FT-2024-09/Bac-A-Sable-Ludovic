@@ -80,6 +80,23 @@ export default class RepoResolver {
     console.log("myRepo", myRepo);
     return myRepo;
   }
+
+  @Mutation(() => Repo)
+  async updateRepo(@Arg("id") id: string, @Arg("data") updatedRepo: RepoInput) {
+    console.log("ID reçu pour la mise à jour :", id);
+    const repo = await Repo.findOneOrFail({ where: { id } });
+
+    repo.url = updatedRepo.url;
+    repo.name = updatedRepo.name;
+    const status = await Status.findOneOrFail({
+      where: { id: +updatedRepo.isPrivate },
+    });
+    repo.status = status;
+
+    await repo.save();
+    console.log(`Repo ${repo.name} mis à jour`);
+    return repo;
+  }
   @Mutation(() => Repo)
   async deleteRepo(@Arg("id") id: string) {
     console.log("ID reçu pour suppression:", id);
