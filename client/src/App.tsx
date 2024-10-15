@@ -18,21 +18,23 @@ import { useQuery, gql } from "@apollo/client";
 
 import { useState } from "react";
 
+import { useFullReposQuery } from "./generated/graphql-types";
+
 // Requête GraphQL pour récupérer les repos avec leur id, name, url et isFavorite
-const GET_REPOS = gql`
-  query FullRepos {
-    fullrepos {
-      id
-      name
-      url
-      isFavorite
-      langs {
-        id
-        label
-      }
-    }
-  }
-`;
+// const GET_REPOS = gql`
+//   query FullRepos {
+//     fullrepos {
+//       id
+//       name
+//       url
+//       isFavorite
+//       langs {
+//         id
+//         label
+//       }
+//     }
+//   }
+// `;
 
 // Requête GraphQL pour récupérer les langues avec leur label
 const GET_LANGS = gql`
@@ -53,7 +55,7 @@ function App() {
     error: errorRepos,
     data: dataRepos,
     refetch: refetchRepos,
-  } = useQuery(GET_REPOS);
+  } = useFullReposQuery();
 
   // Utilisation du hook useQuery pour récupérer les données de la requête GET_LANGS
   const {
@@ -99,10 +101,10 @@ function App() {
   // Si une langue est sélectionnée, on filtre les repos pour ne garder que ceux qui ont cette langue.
   // Sinon, on garde tous les repos.
   const filteredRepos = selectedLang
-    ? dataRepos.fullrepos.filter((repo: Repo) =>
+    ? dataRepos?.fullrepos.filter((repo: Repo) =>
         repo.langs?.some((lang: Lang) => lang.label === selectedLang)
       )
-    : dataRepos.fullrepos;
+    : dataRepos?.fullrepos;
 
   return (
     <main>
@@ -121,7 +123,7 @@ function App() {
         ))}
       </ul>
       <div className="repoContainer">
-        {filteredRepos.map((repo: Repo) => (
+        {filteredRepos?.map((repo: Repo) => (
           <RepoDard
             name={repo.name}
             url={repo.url}
