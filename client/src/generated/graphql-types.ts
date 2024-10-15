@@ -140,6 +140,11 @@ export type FullReposQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FullReposQuery = { __typename?: 'Query', fullrepos: Array<{ __typename?: 'Repo', id: string, name: string, url: string, isFavorite: boolean, langs: Array<{ __typename?: 'Lang', id: number, label: string }> }> };
 
+export type FullLangsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FullLangsQuery = { __typename?: 'Query', fulllangs: Array<{ __typename?: 'Lang', id: number, label: string }> };
+
 
 export const FullReposDocument = gql`
     query FullRepos {
@@ -187,3 +192,43 @@ export type FullReposQueryHookResult = ReturnType<typeof useFullReposQuery>;
 export type FullReposLazyQueryHookResult = ReturnType<typeof useFullReposLazyQuery>;
 export type FullReposSuspenseQueryHookResult = ReturnType<typeof useFullReposSuspenseQuery>;
 export type FullReposQueryResult = Apollo.QueryResult<FullReposQuery, FullReposQueryVariables>;
+export const FullLangsDocument = gql`
+    query FullLangs {
+  fulllangs {
+    id
+    label
+  }
+}
+    `;
+
+/**
+ * __useFullLangsQuery__
+ *
+ * To run a query within a React component, call `useFullLangsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFullLangsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFullLangsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFullLangsQuery(baseOptions?: Apollo.QueryHookOptions<FullLangsQuery, FullLangsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FullLangsQuery, FullLangsQueryVariables>(FullLangsDocument, options);
+      }
+export function useFullLangsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FullLangsQuery, FullLangsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FullLangsQuery, FullLangsQueryVariables>(FullLangsDocument, options);
+        }
+export function useFullLangsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FullLangsQuery, FullLangsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FullLangsQuery, FullLangsQueryVariables>(FullLangsDocument, options);
+        }
+export type FullLangsQueryHookResult = ReturnType<typeof useFullLangsQuery>;
+export type FullLangsLazyQueryHookResult = ReturnType<typeof useFullLangsLazyQuery>;
+export type FullLangsSuspenseQueryHookResult = ReturnType<typeof useFullLangsSuspenseQuery>;
+export type FullLangsQueryResult = Apollo.QueryResult<FullLangsQuery, FullLangsQueryVariables>;

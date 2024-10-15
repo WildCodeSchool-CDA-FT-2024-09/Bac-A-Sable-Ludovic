@@ -15,3 +15,12 @@ export const GET_REPOS = gql`
     }
   }
 `;
+
+export const GET_LANGS = gql`
+  query FullLangs {
+    fulllangs {
+      id
+      label
+    }
+  }
+`;

@@ -14,11 +14,14 @@ import RepoDard from "./components/RepoDard";
 import Langs from "./components/Langs";
 
 // import du hook useQuery et de la fonction gql (gql permet de définir des requêtes ou des mutations GraphQL)
-import { useQuery, gql } from "@apollo/client";
+// import { useQuery, gql } from "@apollo/client";
 
 import { useState } from "react";
 
-import { useFullReposQuery } from "./generated/graphql-types";
+import {
+  useFullReposQuery,
+  useFullLangsQuery,
+} from "./generated/graphql-types";
 
 // Requête GraphQL pour récupérer les repos avec leur id, name, url et isFavorite
 // const GET_REPOS = gql`
@@ -37,14 +40,14 @@ import { useFullReposQuery } from "./generated/graphql-types";
 // `;
 
 // Requête GraphQL pour récupérer les langues avec leur label
-const GET_LANGS = gql`
-  query FullLangs {
-    fulllangs {
-      id
-      label
-    }
-  }
-`;
+// const GET_LANGS = gql`
+//   query FullLangs {
+//     fulllangs {
+//       id
+//       label
+//     }
+//   }
+// `;
 
 function App() {
   const [selectedLang, setSelectedLang] = useState<string | null>(null);
@@ -63,7 +66,7 @@ function App() {
     error: errorLangs,
     data: dataLangs,
     refetch: refetchLangs,
-  } = useQuery(GET_LANGS);
+  } = useFullLangsQuery();
 
   // const [repos, setRepos] = useState<Repo[]>([]);
   // const [langs, setLangs] = useState<Lang[]>([]);
@@ -114,7 +117,7 @@ function App() {
         <li className="NoFilter" onClick={() => setSelectedLang(null)}>
           Aucun filtre
         </li>
-        {dataLangs.fulllangs.map((lang: Lang) => (
+        {dataLangs?.fulllangs.map((lang: Lang) => (
           <Langs
             key={lang.label}
             lang={lang.label}
