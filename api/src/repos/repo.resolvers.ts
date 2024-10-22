@@ -34,7 +34,7 @@ export default class RepoResolver {
   // Methode GET pour tous les repos
   @Query(() => [Repo])
   async fullrepos() {
-    console.log("fullrepos");
+    console.log("fullrepos&&");
     const repos = await Repo.find({
       relations: {
         status: true,

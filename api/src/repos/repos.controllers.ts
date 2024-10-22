@@ -43,7 +43,7 @@ repoControllers.get("/", async (req: Request, res: Response) => {
       typeof req.query.status === "string"
         ? parseInt(req.query.status, 10)
         : null;
-
+        console.log("Hello");
     const queryOptions: any = {
       relations: {
         status: true,
@@ -87,6 +87,7 @@ repoControllers.get("/:id", async (req: Request, res: Response) => {
 
 repoControllers.post("/", async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const repo = new Repo();
     repo.id = req.body.id;
     repo.name = req.body.name;

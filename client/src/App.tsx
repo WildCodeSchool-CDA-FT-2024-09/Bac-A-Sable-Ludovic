@@ -111,7 +111,7 @@ function App() {
 
   return (
     <main>
-      <h1 className="titleRepo">Mes repo GitHub</h1>
+      <h1 className="titleRepo">Mes repo GitHub231</h1>
 
       <ul className="langContainer">
         <li className="NoFilter" onClick={() => setSelectedLang(null)}>

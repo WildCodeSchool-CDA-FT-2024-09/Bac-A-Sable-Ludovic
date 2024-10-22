@@ -8,6 +8,10 @@ RUN npm install
 
 COPY src src
 
+COPY data data
+
+RUN npm run seed
+
 EXPOSE 4000
 
 CMD ["npm", "run", "dev"]
