@@ -13,19 +13,16 @@ import lang_by_repo from "../../data/lang_by_repo.json";
 (async () => {
   console.log("coucou");
   await dataSource.initialize();
-  const queryRunner = dataSource.createQueryRunner();
+  // const queryRunner = dataSource.createQueryRunner();
   console.log("Hello");
 
   try {
-    await queryRunner.startTransaction();
-    await queryRunner.query("DELETE FROM lang_repos_repo");
-    await queryRunner.query("DELETE FROM lang");
-    await queryRunner.query("DELETE FROM repo");
-    await queryRunner.query("DELETE FROM status");
-
-    await queryRunner.query(
-      'DELETE FROM sqlite_sequence WHERE name="status" OR name ="lang"'
-    );
+    // await queryRunner.startTransaction();
+    // await queryRunner.query("TRUNCATE lang_repos_repo CASCADE");
+    // await queryRunner.query("TRUNCATE lang CASCADE");
+    // await queryRunner.query("TRUNCATE repo CASCADE");
+    // await queryRunner.query("TRUNCATE status CASCADE");
+    // await queryRunner.commitTransaction();
 
     const savedLangs = await Promise.all(
       langs.map(async (el) => {
@@ -70,16 +67,16 @@ import lang_by_repo from "../../data/lang_by_repo.json";
           return langLabel.some((lgLabel) => lgLabel.label === svLg.label);
         });
         repo.langs = myLangs;
+        repo.isFavorite = false;
 
         return await repo.save();
       })
     );
 
     console.log(savedRepos);
-
-    await queryRunner.commitTransaction();
+    await dataSource.destroy();
   } catch (error) {
     console.log(error);
-    await queryRunner.rollbackTransaction();
+    // await queryRunner.rollbackTransaction();
   }
 })();

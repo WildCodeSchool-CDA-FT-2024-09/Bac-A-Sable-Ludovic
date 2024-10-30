@@ -10,11 +10,11 @@ COPY src src
 
 COPY data data
 
-RUN npm run seed
+# RUN npm run seed
 
 EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "full"]
 
 
 
