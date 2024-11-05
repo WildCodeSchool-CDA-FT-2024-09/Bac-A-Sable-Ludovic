@@ -1,11 +1,11 @@
 // import express from "express";
 // import router from "./router";
-// import * as dotenv from "dotenv";
+import * as dotenv from "dotenv";
 // import cors from "cors";
 
-// dotenv.config();
+dotenv.config();
 
-// const { PORT } = process.env;
+const { PORT } = process.env;
 
 // import { dataSource } from "./db/client";
 // import "reflect-metadata";
@@ -86,8 +86,9 @@ import StatusResolver from "./status/status.resolvers";
   const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port: Number(PORT) },
   });
 
-  console.log(`Server ready at ${url}`);
+  console.info(`Docker compose is watching`);
+  console.log(`Port used: ${url}`);
 })();
