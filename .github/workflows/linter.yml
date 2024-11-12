@@ -36,7 +36,7 @@ jobs:
         run: npm run fullinstall
 
       - name: Run linters
-        run: npx lint-staged --diff="origin/${{ github.base_ref }}"...origin/${{ github.head_ref }}"
+        run: npx lint-staged --diff="origin/${GITHUB_BASE_REF}...origin/${GITHUB_HEAD_REF}"
 
       - name: Run unit tests
         run: npm run test
