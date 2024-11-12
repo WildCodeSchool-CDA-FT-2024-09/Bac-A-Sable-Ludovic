@@ -21,6 +21,7 @@ import { useState } from "react";
 import {
   useFullReposQuery,
   useFullLangsQuery,
+  useLoginLazyQuery,
 } from "./generated/graphql-types";
 
 // Requête GraphQL pour récupérer les repos avec leur id, name, url et isFavorite
@@ -50,6 +51,7 @@ import {
 // `;
 
 function App() {
+  const [login] = useLoginLazyQuery();
   const [selectedLang, setSelectedLang] = useState<string | null>(null);
 
   // Utilisation du hook useQuery pour récupérer les données de la requête GET_REPOS
@@ -97,6 +99,17 @@ function App() {
   // const handleLangChange = (lang: string | null) => {
   //   setSelectedLang(lang);
   // };
+
+  const handleLogin = async () => {
+    // useQuery...
+    await login({
+      variables: {
+        email: "test@test.com",
+        password: "argon2hash",
+      },
+    });
+  };
+
   if (loadingRepos || loadingLangs) return <h1>Loading...</h1>;
   if (errorRepos || errorLangs) return <p>Error</p>;
 
@@ -111,7 +124,8 @@ function App() {
 
   return (
     <main>
-      <h1 className="titleRepo">Mes repo GitHub231</h1>
+      <h1 className="titleRepo">Mes repo GitHub</h1>
+      <button onClick={handleLogin}>Login</button>
 
       <ul className="langContainer">
         <li className="NoFilter" onClick={() => setSelectedLang(null)}>
@@ -119,7 +133,8 @@ function App() {
         </li>
         {dataLangs?.fulllangs.map((lang: Lang) => (
           <Langs
-            key={lang.label}
+            key={lang.id}
+            id={lang.id}
             lang={lang.label}
             onClick={() => setSelectedLang(lang.label)}
           />
@@ -128,6 +143,7 @@ function App() {
       <div className="repoContainer">
         {filteredRepos?.map((repo: Repo) => (
           <RepoDard
+            key={repo.id}
             name={repo.name}
             url={repo.url}
             id={repo.id}

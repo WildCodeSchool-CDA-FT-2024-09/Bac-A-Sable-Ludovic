@@ -44,6 +44,7 @@ import "reflect-metadata";
 import RepoResolvers from "./repos/repo.resolvers";
 import LangResolver from "./langs/lang.resolvers";
 import StatusResolver from "./status/status.resolvers";
+import UserResolver from "./user/user.resolver";
 
 // import repos from "../data/repos.json";
 
@@ -80,13 +81,15 @@ import StatusResolver from "./status/status.resolvers";
 (async () => {
   await dataSource.initialize();
   const schema = await buildSchema({
-    resolvers: [RepoResolvers, LangResolver, StatusResolver],
+    resolvers: [RepoResolvers, LangResolver, StatusResolver, UserResolver],
   });
 
   const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: Number(PORT) },
+    context: async ({ req, res }) => ({ req, res }),
+    
   });
 
   console.info(`Docker compose is watching`);

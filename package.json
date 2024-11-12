@@ -1,0 +1,13 @@
+{
+  "name": "bac-a-sable-ludovic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fullinstall": "cd ./api && npm run test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

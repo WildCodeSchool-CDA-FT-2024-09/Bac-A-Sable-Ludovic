@@ -1,13 +1,17 @@
 import "./Detail.css";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import connexion from "../services/connexion";
 import type { Repo } from "../types/RepoType";
+import axios from "axios";
 
 export default function Detail() {
   console.log("Initialisation du Detail");
   const { id } = useParams();
   const [data, setData] = useState<Repo>();
+
+  const connexion = axios.create({
+    baseURL: "http://localhost:4000",
+  });
 
   const handleLike = async () => {
     try {
@@ -42,7 +46,13 @@ export default function Detail() {
           <a href={data.url} target="_blank" rel="noreferrer">
             {data.url}
           </a>
-          <p>{data.langs ? data.langs.map((lang) => lang.label) : "No languages"}</p>
+          <p>
+            {data.langs
+              ? data.langs.map((lang) => (
+                  <span key={lang.id}>{lang.label}</span>
+                ))
+              : "No languages"}
+          </p>
           <button type="button" onClick={handleLike}>
             {data.isFavorite ? "DisLike" : "Like"}
           </button>
