@@ -16,12 +16,20 @@ type LangBy = { repo_id: string; lang_id: number };
 
 type LangRaw = { node: { name: string } };
 
-(async () => {
-  const raw = await JSON.parse(
-    fs.readFileSync("./data/raw.json", { encoding: "utf-8" })
-  );
+type RawRepo = {
+  id: string;
+  isPrivate: boolean;
+  name: string;
+  url: string;
+  languages: LangRaw[];
+};
 
-  const repo: Repo[] = raw.map(
+(async () => {
+  try {
+    const rawData = await fs.readFileSync("./data/raw.json", { encoding: "utf-8" });
+    const raw: RawRepo[] = JSON.parse(rawData);
+    
+    const repo: Repo[] = raw.map(
     (rep: { id: string; isPrivate: boolean; name: string; url: string }) => ({
       id: rep.id,
       isPrivate: rep.isPrivate ? 1 : 2,
@@ -33,7 +41,7 @@ type LangRaw = { node: { name: string } };
   const langs: Lang[] = [];
   const lang_by_repo: LangBy[] = [];
   let langId: number = 1;
-  raw.forEach((rep: any) => {
+  raw.forEach((rep) => {
     rep.languages.forEach((lang: LangRaw) => {
       if (!langs.some((lg: Lang) => lg.label === lang.node.name)) {
         langs.push({ id: langId, label: lang.node.name });
@@ -72,4 +80,7 @@ type LangRaw = { node: { name: string } };
     ]),
     (err) => (err ? console.error(err) : console.log("File status is ready"))
   );
+} catch (error) {
+  console.error(error);
+}
 })();
