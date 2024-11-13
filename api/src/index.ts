@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const { PORT } = process.env;
+const { AUTH_SECRET_KEY, PORT } = process.env;
 
 // import { dataSource } from "./db/client";
 // import "reflect-metadata";
@@ -33,18 +33,23 @@ const { PORT } = process.env;
 //startStandaloneServer pour démarrer le serveur Apollo
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import setCookie from "set-cookie-parser";
+import * as jwt from "jsonwebtoken";
+
+import getSchema from "./schema";
+
 //Import buildSchema du package type-graphql pour construire le schéma GraphQL
 //en utilisant des classes et des décorateurs TypeScript
-import { buildSchema } from "type-graphql";
+// import { buildSchema } from "type-graphql";
 //Import de la base de données
 import { dataSource } from "./db/client";
 //Import de reflect-metadata qui active les décorateurs TypeScript (essentiel pour type-graphql et typeorm)
 import "reflect-metadata";
 //Import des resolvers de repos
-import RepoResolvers from "./repos/repo.resolvers";
-import LangResolver from "./langs/lang.resolvers";
-import StatusResolver from "./status/status.resolvers";
-import UserResolver from "./user/user.resolver";
+// import RepoResolvers from "./repos/repo.resolvers";
+// import LangResolver from "./langs/lang.resolvers";
+// import StatusResolver from "./status/status.resolvers";
+// import UserResolver from "./user/user.resolver";
 
 // import repos from "../data/repos.json";
 
@@ -80,16 +85,30 @@ import UserResolver from "./user/user.resolver";
 
 (async () => {
   await dataSource.initialize();
-  const schema = await buildSchema({
-    resolvers: [RepoResolvers, LangResolver, StatusResolver, UserResolver],
-  });
+  const schema = await getSchema();
 
   const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: Number(PORT) },
-    context: async ({ req, res }) => ({ req, res }),
-    
+    context: async ({ req, res }) => {
+      if (!req.headers.cookie) return { res };
+
+      const { cdatokenexample } = setCookie.parse(
+        req.headers.cookie as string,
+        {
+          map: true,
+        }
+      );
+      if (!cdatokenexample) return { res };
+
+      const payload = jwt.verify(
+        cdatokenexample.value,
+        AUTH_SECRET_KEY as string
+      );
+      if (!payload) return { res };
+      return { res, payload };
+    },
   });
 
   console.info(`Docker compose is watching`);
