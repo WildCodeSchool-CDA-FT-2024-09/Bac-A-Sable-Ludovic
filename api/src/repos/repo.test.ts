@@ -9,6 +9,10 @@ const GET_REPOS = gql`
       name
       url
       isFavorite
+      langs {
+        id
+        label
+      }
     }
   }
 `;
@@ -16,28 +20,45 @@ const GET_REPOS = gql`
 describe("Repo resolvers", () => {
   let schema: GraphQLSchema;
 
+  // Initialisation du schéma avant tous les tests
   beforeAll(async () => {
     schema = await getSchema();
   });
 
-  it("get all repos", async () => {
-    const result = (await graphql({
+  it("should return all repos with valid structure", async () => {
+    // Exécution de la requête GraphQL
+    const result = await graphql({
       schema: schema,
       source: print(GET_REPOS),
-    })) as { data: { fullrepos: Array<unknown> } };
-    console.log(result);
+    });
 
-    // Verification que la réponse est au format tableau
-    expect(result.data.fullrepos).toEqual(expect.any(Array));
+    // Vérification qu'il n'y a pas d'erreurs dans la réponse
+    if (result.errors) {
+      console.error("GraphQL errors:", result.errors);
+      fail("GraphQL query returned errors");
+    }
 
-    // Verification que chaque objet du tableau contient l'ensemble des keys
-    expect(result.data.fullrepos).toEqual(
+    // Vérification que les données sont définies
+    const fullrepos = result.data?.fullrepos;
+    expect(fullrepos).toBeDefined();
+
+    // Vérification que `fullrepos` est un tableau
+    expect(fullrepos).toEqual(expect.any(Array));
+
+    // Vérification de la structure des objets dans le tableau
+    expect(fullrepos).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           id: expect.any(String),
           name: expect.any(String),
           url: expect.any(String),
           isFavorite: expect.any(Boolean),
+          langs: expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(Number),
+              label: expect.any(String),
+            }),
+          ]),
         }),
       ])
     );

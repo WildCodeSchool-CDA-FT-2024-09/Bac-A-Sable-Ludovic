@@ -46,7 +46,7 @@ export class Repo extends BaseEntity {
 
   @Field(() => Status)
   @ManyToOne(() => Status, (status) => status.id)
-  status: Status;
+  status?: Status;
 
   @Field(() => [Lang])
   @ManyToMany(() => Lang, (lang) => lang.repos)

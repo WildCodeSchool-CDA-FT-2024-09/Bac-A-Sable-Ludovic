@@ -28,7 +28,6 @@ export default class LangResolver {
         repos: true,
       },
     });
-    console.info(langs);
     return langs;
   }
 

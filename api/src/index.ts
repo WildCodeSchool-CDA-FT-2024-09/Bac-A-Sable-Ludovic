@@ -85,6 +85,7 @@ import "reflect-metadata";
 
 (async () => {
   await dataSource.initialize();
+  console.log(`Database is connected`);
   const schema = await getSchema();
 
   const server = new ApolloServer({ schema });
