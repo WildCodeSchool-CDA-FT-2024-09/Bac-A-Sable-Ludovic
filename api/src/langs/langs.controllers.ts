@@ -80,9 +80,8 @@ langControllers.post("/", async (req: Request, res: Response) => {
 
     await lang.save();
     res.status(201).json(lang);
-
   } catch (error) {
-    res.sendStatus(500)
+    res.sendStatus(500);
   }
 });
 
@@ -102,5 +101,27 @@ langControllers.post("/", async (req: Request, res: Response) => {
 //   myLang = myLang.filter((lang: Lang) => lang.id !== parseInt(req.params.id));
 //   res.sendStatus(204);
 // });
+
+langControllers.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const LangId = parseInt(req.params.id);
+
+    if (isNaN(LangId)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+
+    const lang = await Lang.findOne({ where: { id: LangId } });
+
+    if (!lang) {
+      return res.status(404).json({ message: "Langue non trouvée" });
+    }
+
+    await Lang.remove(lang);
+
+    return res.status(200).json({ message: "La langue a bien été supprimée" });
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+});
 
 export default langControllers;
