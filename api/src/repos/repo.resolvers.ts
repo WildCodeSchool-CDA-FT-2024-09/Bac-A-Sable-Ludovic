@@ -4,7 +4,15 @@ import { Repo, LightRepo } from "./repo.entities";
 //import des décorateurs et classes Arg, Field, InputType, Mutation, Query et Resolver de type-graphql
 //utilisés pour définir des arguments, des champs, des types d'entrée, des mutations, des requêtes et des résolveurs
 //dans un shcéma GraphQL.
-import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 
 import { Status } from "../status/status.entities";
 
@@ -44,7 +52,7 @@ export default class RepoResolver {
     console.info(repos);
     return repos;
   }
-
+  @Authorized()
   @Query(() => [LightRepo])
   async lightrepos() {
     const repos = await Repo.find();
@@ -52,6 +60,7 @@ export default class RepoResolver {
     return repos;
   }
 
+  @Authorized("admin")
   @Mutation(() => Repo)
   async createNewRepo(@Arg("data") newRepo: RepoInput) {
     //const newRepo: RepoInput = req.body.data
@@ -97,6 +106,7 @@ export default class RepoResolver {
     console.log(`Repo ${repo.name} mis à jour`);
     return repo;
   }
+
   @Mutation(() => Repo)
   async deleteRepo(@Arg("id") id: string) {
     console.log("ID reçu pour suppression:", id);

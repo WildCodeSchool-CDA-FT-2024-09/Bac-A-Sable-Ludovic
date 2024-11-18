@@ -100,14 +100,23 @@ function App() {
   //   setSelectedLang(lang);
   // };
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleLogin = async () => {
-    // useQuery...
-    await login({
-      variables: {
-        email: "test@test.com",
-        password: "argon2hash",
-      },
-    });
+    try {
+      await login({
+        variables: {
+          email,
+          password,
+        },
+      });
+      setErrorMessage(""); // Réinitialise l'erreur
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Échec de la connexion. Vérifiez vos identifiants.");
+    }
   };
 
   if (loadingRepos || loadingLangs) return <h1>Loading...</h1>;
@@ -125,8 +134,33 @@ function App() {
   return (
     <main>
       <h1 className="titleRepo">Mes repo GitHub</h1>
-      <button onClick={handleLogin}>Login</button>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+        className="loginForm"
+      >
+        {errorMessage && <p className="error">{errorMessage}</p>}
 
+        <label htmlFor="email">Email :</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label htmlFor="password">Mot de passe :</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Se connecter</button>
+      </form>
       <ul className="langContainer">
         <li className="NoFilter" onClick={() => setSelectedLang(null)}>
           Aucun filtre
